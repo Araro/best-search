@@ -5,12 +5,12 @@ Best Search is a Python program to find the best item filter by price in differe
 ## Installation
 Download the files bestSearch.py and chromedriver in the same folder or clone this project using:
 
-git clone `https://github.com/Araro/best-search.git
+'git clone https://github.com/Araro/best-search.git'
 
 ## Usage
 Execute the bestSearch in the terminal:
 
-`python3 bestSearch.py`````
+'python3 bestSearch.py'
 
 After that follow the intructions and enjoy
 
