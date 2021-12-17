@@ -30,7 +30,7 @@ white = "\033[1;37m"
 # Le pregunta al usuario por la palabra clave para busqueda
 search = input(yellow + "Item to search: " + magenta)
 print(white)
-# print(f"El producto a buscar es: {producto}")
+# print(f"El producto a buscar es: {search}")
 
 driver = webdriver.Chrome('./chromedriver')
 driver.get("http://www.mercadolibre.com.mx")
@@ -54,6 +54,15 @@ for x in range(len(characters)):
 print(yellow + "Number of pages: " + cyan + count + white)
 countAux = int(count)
 
+# Accept cockies
+try:
+    buttonCockies = driver.find_element_by_id("newCookieDisclaimerButton")
+    buttonCockies.click()
+except Exception as e:
+    print(red)
+    print(e)
+    print(white)
+
 # Urls of Items
 ## pageAux and pageType helps distinguish between the two different types of pages
 try:
@@ -66,14 +75,11 @@ except:
     pageType = False
     print(cyan + "2nd option" + white)
 
-# Links of the products and product list of the page
+# Links of the products of the page
 if(pageAux==True):
-    link_products = driver.find_elements_by_xpath('//a[@class="ui-search-item__group__element ui-search-link"]')
-    # products = driver.find_elements_by_xpath('//li[@class="ui-search-layout__item"]')
-    products = driver.find_elements_by_class_name("ui-search-result__wrapper")
+    link_products = driver.find_elements_by_class_name("ui-search-item__group__element ui-search-link")
 else:
-    link_products = driver.find_elements_by_xpath('//a[@class="ui-search-result__content ui-search-link"]')
-    products = driver.find_elements_by_class_name("ui-search-result__wrapper")
+    link_products = driver.find_elements_by_class_name("ui-search-result__content ui-search-link")
 
 links_page = []
 for tag_a in link_products:
@@ -93,21 +99,59 @@ for tag_a in link_products:
         # print(white)
         # driver.back()
 
+## Product list of the page
+products = driver.find_elements_by_class_name("ui-search-result__wrapper")
 for product in products:
-    if(pageType ==  True):
-        # itemPrice = product.find_element_by_xpath('.//span[@class="price-tag-fraction"]').text
-        # itemTitle = product.find_element_by_xpath('.//h2[@class="ui-search-item__title"]').text
-        itemPrice = product.find_element_by_class_name("price-tag-fraction").text
-        itemTitle = product.find_element_by_tag_name("h2").text
+    itemPrice = product.find_element_by_class_name("price-tag-fraction").text
+    itemTitle = product.find_element_by_tag_name("h2").text
 
+    print(itemPrice)
+    print(itemTitle)
 
-        print(itemPrice)
-        print(itemTitle)
+# Obtaining information about the products of the search
+i = 1
+while(i < countAux):
+    ## Pagination button
+    try:
+        buttonNext = driver.find_element(By.XPATH, '//span[text()="Siguiente"]')
+        buttonNext.click()
+    except Exception as e:
+        print(red)
+        print(e)
+        print(white)
+        break
+
+    # Urls of Items
+    ## pageAux and pageType helps distinguish between the two different types of pages
+    try:
+        pageAux=driver.find_element_by_xpath('//h2[@class="ui-search-item__title"]')
+        pageAux=True
+        pageType=True
+        print(cyan + "1st option" + white)
+    except:
+        pageAux = False
+        pageType = False
+        print(cyan + "2nd option" + white)
+
+    # Links of the products of the page
+    if(pageAux==True):
+        link_products = driver.find_elements_by_class_name("ui-search-item__group__element ui-search-link")
     else:
+        link_products = driver.find_elements_by_class_name("ui-search-result__content ui-search-link")
+
+    links_page = []
+    for tag_a in link_products:
+        links_page.append(tag_a.get_attribute("href"))
+
+    ## Product list of the page
+    products = driver.find_elements_by_class_name("ui-search-result__wrapper")
+    for product in products:
         itemPrice = product.find_element_by_class_name("price-tag-fraction").text
         itemTitle = product.find_element_by_tag_name("h2").text
 
         print(itemPrice)
         print(itemTitle)
+
+    i += 1
 
 driver.close()
