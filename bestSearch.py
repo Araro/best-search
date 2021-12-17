@@ -75,38 +75,16 @@ except:
     pageType = False
     print(cyan + "2nd option" + white)
 
-# Links of the products of the page
-if(pageAux==True):
-    link_products = driver.find_elements_by_class_name("ui-search-item__group__element ui-search-link")
-else:
-    link_products = driver.find_elements_by_class_name("ui-search-result__content ui-search-link")
-
-links_page = []
-for tag_a in link_products:
-    links_page.append(tag_a.get_attribute("href"))
-
-# for link in links_page:
-    # try:
-        # driver.get(link)
-        # Item_name = driver.find_element_by_xpath('//h1').text
-        # Item_price = driver.find_element_by_xpath('//span[@class="price-tag-fraction"]').text
-        # print(Item_name)
-        # print(Item_price)
-        # driver.back()
-    # except Exception as e:
-        # print(red)
-        # print(e)
-        # print(white)
-        # driver.back()
-
 ## Product list of the page
 products = driver.find_elements_by_class_name("ui-search-result__wrapper")
 for product in products:
     itemPrice = product.find_element_by_class_name("price-tag-fraction").text
     itemTitle = product.find_element_by_tag_name("h2").text
+    itemLink = product.find_element_by_tag_name('a').get_attribute('href')
 
     print(itemPrice)
     print(itemTitle)
+    print(itemLink)
 
 # Obtaining information about the products of the search
 i = 1
@@ -133,24 +111,17 @@ while(i < countAux):
         pageType = False
         print(cyan + "2nd option" + white)
 
-    # Links of the products of the page
-    if(pageAux==True):
-        link_products = driver.find_elements_by_class_name("ui-search-item__group__element ui-search-link")
-    else:
-        link_products = driver.find_elements_by_class_name("ui-search-result__content ui-search-link")
-
-    links_page = []
-    for tag_a in link_products:
-        links_page.append(tag_a.get_attribute("href"))
-
     ## Product list of the page
     products = driver.find_elements_by_class_name("ui-search-result__wrapper")
     for product in products:
         itemPrice = product.find_element_by_class_name("price-tag-fraction").text
         itemTitle = product.find_element_by_tag_name("h2").text
+        itemLink = product.find_element_by_tag_name('a').get_attribute('href')
+
 
         print(itemPrice)
         print(itemTitle)
+        print(itemLink)
 
     i += 1
 
