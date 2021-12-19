@@ -18,7 +18,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from tqdm import tqdm
 
-# Declraración de colores para utilizar en "print()"
+# Colors "print()"
 none_color = "\033[1;00m"
 black = "\033[1;30m"
 red = "\033[1;31m"
@@ -29,14 +29,9 @@ magenta = "\033[1;35m"
 cyan = "\033[1;36m"
 white = "\033[1;37m"
 
-#*****************     Functions     *****************************
-
-#******************  End Functions  ******************************
-
-# Le pregunta al usuario por la palabra clave para busqueda
+# Ask to the user the search key words
 search = input(yellow + "Item to search: " + magenta)
 print(white)
-# print(f"El producto a buscar es: {search}")
 
 # Declaration of Driver (Chrome)
 driver = webdriver.Chrome(service=Service('./chromedriver'))
@@ -74,7 +69,7 @@ except Exception as e:
 print(green, "Obtainig information...", none_color)
 i = 0
 n = 1
-#while(i < count_aux):
+## "tqdm" is the progress bar
 for i in tqdm(range(count_aux)):
     # Urls of Items
     ## pageAux and pageType helps distinguish between the two different types of pages
