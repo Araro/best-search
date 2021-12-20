@@ -13,7 +13,7 @@
 #****************************************************************
 import pyshorteners
 
-class item:
+class product:
     def __init__(self, number, price, title, link):
         self.number = number
         self.price = price
@@ -35,8 +35,8 @@ white = "\033[1;37m"
 filename = "resultSearch.txt"
 
 # Open the file and obtain information
-items = []
-list_products = [[], [], [], []]
+list_products = []
+items = [[], [], [], []]
 f_text = open(filename, "r")
 lines_text = f_text.readlines()
 i = 0
@@ -46,42 +46,39 @@ for line in lines_text:
     price = price.replace(",", "")
     link = link.replace ("]", "")
 
-    list_products[0].append(int(number))
-    list_products[1].append(int(price))
-    list_products[2].append(title)
-    list_products[3].append(link)
+    # items[0].append(int(number))
+    # items[1].append(int(price))
+    # items[2].append(title)
+    # items[3].append(link)
 
-    items.append(item(int(number), int(price), title, link))
+    list_products.append(product(int(number), int(price), title, link))
 
     i += 1
 
+# Sort prices by cost
+sorted_price_low = sorted(list_products, key=lambda product: product.price)
+sorted_price_high = sorted(list_products, key=lambda product: product.price, reverse=True)
 
-# Dictionary of products
-dictionary_products = {}
-for pos in range(i):
-    dictionary_products[pos] = {list_products[0][pos]: {'Price': list_products[1][pos], 'Title': list_products[2][pos] , 'Link': list_products[3][pos]}}
-# print(dictionary_products[0])
+for item in range(5):
+    # Cut the URL
+    shortener = pyshorteners.Shortener()
+    short_url = shortener.dagd.short(sorted_price_low[item].link)
+    print(sorted_price_low[item].price, sorted_price_low[item].title, short_url)
 
-sorted_price = sorted(list_products[1])
-# print(sorted_price)
-n = 0
-for x in items:
-    print(x.price, list_products[1][n])
-    n += 1
-
-# for comb in zip(list_products[0],list_products[1], list_products[2], list_products[3]):
+# for comb in zip(items[0],items[1], items[2], items[3]):
     # print(comb[0], comb[1], comb[2], comb[3])
 
-# Cut the URL
-# shortener = pyshorteners.Shortener()
-# short_url = shortener.dagd.short(list_products[3][0])
-# print(short_url)
+# Dictionary of products
+# dictionary_products = {}
+# for pos in range(i):
+    # dictionary_products[pos] = {items[0][pos]: {'Price': items[1][pos], 'Title': items[2][pos] , 'Link': items[3][pos]}}
+# print(dictionary_products[0])
 
 # print(*[cyan, ("{:<8} {:<8} {:<90} {:<50}".format('Number', 'Price', 'Description', 'URL')), none_color])
 # for column in range(i):
-        # print("{:<8} {:<8} {:<90}".format(list_products[0][column], list_products[1][column], list_products[2][column]))
+        # print("{:<8} {:<8} {:<90}".format(items[0][column], items[1][column], items[2][column]))
 
-# new_list = sorted(list_products[1])
+# new_list = sorted(items[1])
 # print(new_list)
 
 f_text.close()
