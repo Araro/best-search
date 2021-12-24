@@ -13,10 +13,12 @@
 #****************************************************************
 
 from selenium import webdriver
+from selenium.webdriver.chrome import options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from tqdm import tqdm
+from selenium.webdriver.chrome.options import Options
 
 # Colors "print()"
 none_color = "\033[1;00m"
@@ -33,8 +35,13 @@ white = "\033[1;37m"
 search = input(yellow + "Item to search: " + magenta)
 print(white)
 
+chrome_options = Options()
+chrome_options.add_argument(
+    "USER_AGENT = Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/71.0.3578.80 Chrome/71.0.3578.80 Safari/537.36"
+)
+
 # Declaration of Driver (Chrome)
-driver = webdriver.Chrome(service=Service('./chromedriver'))
+driver = webdriver.Chrome(service=Service('./chromedriver'), options=chrome_options)
 driver.get("http://www.mercadolibre.com.mx")
 print(yellow + driver.title + white)
 assert "Mercado" in driver.title

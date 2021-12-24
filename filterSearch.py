@@ -13,7 +13,7 @@
 #****************************************************************
 import pyshorteners
 
-class product:
+class Product:
     def __init__(self, number, price, title, link):
         self.number = number
         self.price = price
@@ -51,13 +51,13 @@ for line in lines_text:
     # items[2].append(title)
     # items[3].append(link)
 
-    list_products.append(product(int(number), int(price), title, link))
+    list_products.append(Product(int(number), int(price), title, link))
 
     i += 1
 
 # Sort prices by cost
-sorted_price_low = sorted(list_products, key=lambda product: product.price)
-sorted_price_high = sorted(list_products, key=lambda product: product.price, reverse=True)
+sorted_price_low = sorted(list_products, key=lambda Product: Product.price)
+sorted_price_high = sorted(list_products, key=lambda Product: Product.price, reverse=True)
 
 for item in range(5):
     # Cut the URL
