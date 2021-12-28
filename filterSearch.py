@@ -1,25 +1,23 @@
-#****************************************************************
-#* -*- coding: utf-8 -*-                                        *
-#*  Name    : filterSeach.py                                    *
-#*  Author  : Eric Araro                                        *
-#*  Notice  : Copyright (c) 2021 [Banary Source]                *
-#*          : All Rights Reserved                               *
-#*  Date    : 12/17/2021                                        *
-#*  Version : 1.0                                               *
-#*  Notes   : Utiliza el archivo "searchResult.txt" con         *
-#*            información de productos en mercado libre.        *
-#*            Realiza una comparación de los precios            *
-#*            para filtar los productos adecuados               *
-#****************************************************************
+'''
+-*- coding: utf-8 -*-
+  Name    : filterSeach.py
+  Author  : Eric Araro
+  Notice  : Copyright (c) 2021 [Banary Source]
+          : All Rights Reserved
+  Date    : 12/17/2021
+  Version : 1.0
+  Notes   : Use the file productsInfo/infoMercadoLibre.json  to obtain the products
+            information and filter bay price.
+'''
 import pyshorteners
 from json import load
 
-class Product:
-    def __init__(self, number, price, title, link):
-        self.number = number
-        self.price = price
-        self.title = title
-        self.link = link
+# class Product:
+    # def __init__(self, number, price, title, link):
+        # self.number = number
+        # self.price = price
+        # self.title = title
+        # self.link = link
 
 # Colors for terminal "print()"
 none_color = "\033[1;00m"
@@ -36,12 +34,15 @@ white = "\033[1;37m"
 filename = "productsInfo/infoMercadoLibre.json"
 
 # Parse the JSON string in the info file
-i = 0
 with open(filename) as info_file:
     list_products = load(info_file)
 
-print(*[red, len(list_products[0]), none_color])
-print(type(list_products[0]))
+# print(*[red, len(list_products[0]), none_color])
+# print(list_products[0]['name'])
+
+list_price = []
+for i in range(len(list_products)):
+    print(list_products[i]['price'])
 
 # Open the file and obtain information
 # list_products = []

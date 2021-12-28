@@ -15,8 +15,6 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.loader.processors import MapCompose
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
-from bs4 import BeautifulSoup
-# import bestSearch
 
 # Colors "print()"
 none_color = "\033[1;00m"
@@ -40,9 +38,9 @@ with open("productsInfo/" + "variables.txt", "r") as f:
 # Delete square brackets of the URL
 page_url = str(data_variables[0])[1:-1]
 search_url = str(data_variables[1])[1:-1]
+page_url = page_url.replace('\'', '')
+search_url = search_url.replace('\'', '')
 
-print(*[red, page_url, none_color])
-print(*[red, search_url, none_color])
 #*******************************************************************
 # Class definitions
 #*******************************************************************
@@ -67,41 +65,39 @@ class MercadoLibreCrawler(CrawlSpider):
 
     allowed_domains = ['articulo.mercadolibre.com.mx', 'listado.mercadolibre.com.mx']
     start_urls = [search_url]
+    # start_urls = ['https://listado.mercadolibre.com.mx/audiofonos-skullcandy#D[A:audiofonos%20skullcandy]']
     download_delay = 1
 
     rules = (
-        # Paginación 
+        # Pagination 
         Rule(
             LinkExtractor(
                 allow=r'_Desde_\d+'
             ), follow=True),
 
-        # Detalle de los productos
+        # Products details 
         Rule(
             LinkExtractor(
                 allow=r'/MLM-'
             ), follow=True, callback='parse_items'),
     )
 
-
     def parse_items(self, response):
         item = ItemLoader(Product(), response)
 
-        item.add_xpath('name',
-                        '//h1/text()',
-                        MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
-                        )
-        #item.add_xpath('price', 
-        #                '//div[@class="price-tag ui-pdp-price__part"]/text()')
-        item.add_xpath('description',
-                        '//div[@class="ui-pdp-description"]/p/text()',
-                        MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
-                        )
-        soup = BeautifulSoup(response.body)
-        price = soup.find(class_="ui-pdp-price__second-line")
-        price_complete = price.text.replace('\n', ' ',).replace('\r', ' ').replace(' ', '')
-        item.add_value('price', price_complete)
+        # item.add_xpath('name',
+                        # '//h1/text()',
+                        # MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
+                        # )
+        # item.add_xpath('price',
+                        # '//div[@class="ui-pdp-price__second-line"]/span/span/span/text()',
+                        # MapCompose(lambda i: i.replace('\n', '  ').replace('\r', '  ').strip())
+                        # )
 
+        # item.add_xpath('description',
+                        # '//div[@class="ui-pdp-description"]/p/text()',
+                        # MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
+                        # )
 
         yield item.load_item()
 
