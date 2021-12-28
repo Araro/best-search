@@ -12,6 +12,7 @@
 #*            para filtar los productos adecuados               *
 #****************************************************************
 import pyshorteners
+from json import load
 
 class Product:
     def __init__(self, number, price, title, link):
@@ -32,38 +33,46 @@ cyan = "\033[1;36m"
 white = "\033[1;37m"
 
 # Filename declaration
-filename = "resultSearch.txt"
+filename = "productsInfo/infoMercadoLibre.json"
+
+# Parse the JSON string in the info file
+i = 0
+with open(filename) as info_file:
+    list_products = load(info_file)
+
+print(*[red, len(list_products[0]), none_color])
+print(type(list_products[0]))
 
 # Open the file and obtain information
-list_products = []
-items = [[], [], [], []]
-f_text = open(filename, "r")
-lines_text = f_text.readlines()
-i = 0
-for line in lines_text:
-    number, price, title, link = (item.strip() for item in line.split('] [', 3))
-    number = number.replace("[","")
-    price = price.replace(",", "")
-    link = link.replace ("]", "")
+# list_products = []
+# items = [[], [], [], []]
+# f_text = open(filename, "r")
+# lines_text = f_text.readlines()
+# i = 0
+# for line in lines_text:
+    # number, price, title, link = (item.strip() for item in line.split('] [', 3))
+    # number = number.replace("[","")
+    # price = price.replace(",", "")
+    # link = link.replace ("]", "")
 
-    # items[0].append(int(number))
-    # items[1].append(int(price))
-    # items[2].append(title)
-    # items[3].append(link)
+    # # items[0].append(int(number))
+    # # items[1].append(int(price))
+    # # items[2].append(title)
+    # # items[3].append(link)
 
-    list_products.append(Product(int(number), int(price), title, link))
+    # list_products.append(Product(int(number), int(price), title, link))
 
-    i += 1
+    # i += 1
 
-# Sort prices by cost
-sorted_price_low = sorted(list_products, key=lambda Product: Product.price)
-sorted_price_high = sorted(list_products, key=lambda Product: Product.price, reverse=True)
+# # Sort prices by cost
+# sorted_price_low = sorted(list_products, key=lambda Product: Product.price)
+# sorted_price_high = sorted(list_products, key=lambda Product: Product.price, reverse=True)
 
-for item in range(5):
-    # Cut the URL
-    shortener = pyshorteners.Shortener()
-    short_url = shortener.dagd.short(sorted_price_low[item].link)
-    print(sorted_price_low[item].price, sorted_price_low[item].title, short_url)
+# for item in range(5):
+    # # Cut the URL
+    # # shortener = pyshorteners.Shortener()
+    # # short_url = shortener.dagd.short(sorted_price_low[item].link)
+    # print(sorted_price_low[item].price, sorted_price_low[item].title)
 
 # for comb in zip(items[0],items[1], items[2], items[3]):
     # print(comb[0], comb[1], comb[2], comb[3])
@@ -81,4 +90,4 @@ for item in range(5):
 # new_list = sorted(items[1])
 # print(new_list)
 
-f_text.close()
+# f_text.close()
