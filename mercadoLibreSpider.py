@@ -49,8 +49,8 @@ class Product(Item):
     price = Field()
     description = Field()
     discount_percent = Field()
-    discount_expiration_rate = Field()
     rate = Field()
+    opinion_number = Field()
     sale = Field()
     stock = Field()
     link = Field()
@@ -60,12 +60,11 @@ class MercadoLibreCrawler(CrawlSpider):
 
     custom_settings = {
         'USER_AGENT': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/71.0.3578.80 Chrome/71.0.3578.80 Safari/537.36',
-        'CLOSESPIDER_PAGECOUNT' : 2
+        # 'CLOSESPIDER_PAGECOUNT' : 100
     }
 
     allowed_domains = ['articulo.mercadolibre.com.mx', 'listado.mercadolibre.com.mx']
     start_urls = [search_url]
-    # start_urls = ['https://listado.mercadolibre.com.mx/audiofonos-skullcandy#D[A:audiofonos%20skullcandy]']
     download_delay = 1
 
     rules = (
@@ -82,22 +81,52 @@ class MercadoLibreCrawler(CrawlSpider):
             ), follow=True, callback='parse_items'),
     )
 
+
+
     def parse_items(self, response):
         item = ItemLoader(Product(), response)
 
-        # item.add_xpath('name',
-                        # '//h1/text()',
-                        # MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
-                        # )
-        # item.add_xpath('price',
-                        # '//div[@class="ui-pdp-price__second-line"]/span/span/span/text()',
-                        # MapCompose(lambda i: i.replace('\n', '  ').replace('\r', '  ').strip())
-                        # )
+        item.add_xpath('name',
+                        '//h1/text()',
+                        MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
+                        )
+        item.add_xpath('price',
+                        '//div[@class="ui-pdp-price__second-line"]/span/span/span/text()',
+                        MapCompose(lambda i: i.replace('\n', '  ').replace('\r', '  ').strip())
+                        )
 
-        # item.add_xpath('description',
-                        # '//div[@class="ui-pdp-description"]/p/text()',
-                        # MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
-                        # )
+        item.add_xpath('description',
+                        '//div[@class="ui-pdp-description"]/p/text()',
+                        MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
+                        )
+
+        item.add_xpath('discount_percent',
+                        '//span[@class="ui-pdp-price__second-line__label ui-pdp-color--GREEN ui-pdp-size--MEDIUM"]/text()',
+                        MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
+                        )
+
+        item.add_xpath('rate',
+                        '//p[@class="ui-pdp-reviews__rating__summary__average"]/text()',
+                        MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
+                        )
+
+        item.add_xpath('opinion_number',
+                        '//p[@class="ui-pdp-reviews__rating__summary__label"]/text()',
+                        MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
+                        )
+
+        item.add_xpath('sale',
+                        '//span[@class="ui-pdp-subtitle"]/text()',
+                        MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
+                        )
+
+        item.add_xpath('stock',
+                        '//span[@class="ui-pdp-buybox__quantity__available"]/text()',
+                        MapCompose(lambda i: i.replace('\n', ' ').replace('\r', ' ').strip())
+                        )
+
+        actual_url = response.url
+        item.add_value('link', actual_url)
 
         yield item.load_item()
 
