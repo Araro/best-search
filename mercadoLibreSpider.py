@@ -11,23 +11,22 @@
 
 from scrapy.item import Field
 from scrapy.item import Item
-from scrapy.spiders import CrawlSpider, Rule
+from scrapy.spiders import CrawlSpider
 from scrapy.loader.processors import MapCompose
-from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
+from scrapy import Request
 import color
 
 # Open variables file
-with open("productsInfo/" + "variables.txt", "r") as f:
+with open("productsInfo/" + "urlMercadoLibre.txt", "r") as f:
     lines = f.readlines()
-    data_variables = {}
+    url_products = {}
     i = 0
     for line in lines:
-        data_variables[i] = line.strip().split('\n')
+        url_products[i] = line.strip().lstrip('[').rstrip(']')
         i += 1
-# Delete square brackets of the URL
-page_url = str(data_variables[0])[1:-1].replace('\'', '')
-search_url = str(data_variables[1])[1:-1].replace('\'', '')
+
+print(len(url_products))
 #*******************************************************************
 # Class definitions
 #*******************************************************************
@@ -47,29 +46,14 @@ class MercadoLibreCrawler(CrawlSpider):
 
     custom_settings = {
         'USER_AGENT': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/71.0.3578.80 Chrome/71.0.3578.80 Safari/537.36',
-        # 'CLOSESPIDER_PAGECOUNT' : 100
     }
 
-    allowed_domains = ['articulo.mercadolibre.com.mx', 'listado.mercadolibre.com.mx', 'electronica.mercadolibre.com.mx/']
-    start_urls = [search_url]
-    # start_urls = ['https://listado.mercadolibre.com.mx/mascotas#D[A:mascotas]']
     download_delay = 1
+    allowed_domains = ['articulo.mercadolibre.com.mx', 'listado.mercadolibre.com.mx']
 
-    rules = (
-        # Pagination 
-        Rule(
-            LinkExtractor(
-                allow=r'_Desde_\d+'
-            ), follow=True),
-
-        # Products details 
-        Rule(
-            LinkExtractor(
-                allow=r'/MLM-'
-            ), follow=True, callback='parse_items'),
-    )
-
-
+    def start_requests(self):
+        for url in range(len(url_products)):
+            yield Request(url_products[url], self.parse_items)
 
     def parse_items(self, response):
         item = ItemLoader(Product(), response)
