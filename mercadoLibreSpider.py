@@ -15,17 +15,7 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.loader.processors import MapCompose
 from scrapy.linkextractors import LinkExtractor
 from scrapy.loader import ItemLoader
-
-# Colors "print()"
-none_color = "\033[1;00m"
-black = "\033[1;30m"
-red = "\033[1;31m"
-green = "\033[1;32m"
-yellow = "\033[1;33m"
-blue = "\033[1;34m"
-magenta = "\033[1;35m"
-cyan = "\033[1;36m"
-white = "\033[1;37m"
+import color
 
 # Open variables file
 with open("productsInfo/" + "variables.txt", "r") as f:
@@ -36,11 +26,8 @@ with open("productsInfo/" + "variables.txt", "r") as f:
         data_variables[i] = line.strip().split('\n')
         i += 1
 # Delete square brackets of the URL
-page_url = str(data_variables[0])[1:-1]
-search_url = str(data_variables[1])[1:-1]
-page_url = page_url.replace('\'', '')
-search_url = search_url.replace('\'', '')
-
+page_url = str(data_variables[0])[1:-1].replace('\'', '')
+search_url = str(data_variables[1])[1:-1].replace('\'', '')
 #*******************************************************************
 # Class definitions
 #*******************************************************************
@@ -63,8 +50,9 @@ class MercadoLibreCrawler(CrawlSpider):
         # 'CLOSESPIDER_PAGECOUNT' : 100
     }
 
-    allowed_domains = ['articulo.mercadolibre.com.mx', 'listado.mercadolibre.com.mx']
+    allowed_domains = ['articulo.mercadolibre.com.mx', 'listado.mercadolibre.com.mx', 'electronica.mercadolibre.com.mx/']
     start_urls = [search_url]
+    # start_urls = ['https://listado.mercadolibre.com.mx/mascotas#D[A:mascotas]']
     download_delay = 1
 
     rules = (
