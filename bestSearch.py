@@ -4,7 +4,7 @@
   Author  : Eric Araro
   Notice  : Copyright (c) 2021 [Banary Source]
           : All Rights Reserved
-  Date    : 24/12/2021
+  Date    : 12/24/2021
   Version : 1.1
   Notes   : Obtain the search URL from "mercadolibre.com.mx" using Selenium.
             Send de information to the scrapy file.

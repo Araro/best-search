@@ -4,7 +4,7 @@
   Author  : Eric Araro
   Notice  : Copyright (c) 2021 [Banary Source]
           : All Rights Reserved
-  Date    : 25/12/2021
+  Date    : 12/25/2021
   Version : 1.1
   Notes   : Make web Scraping on "mercadolibre.com.mx" using scrapy.
 '''
