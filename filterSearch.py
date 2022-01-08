@@ -1,84 +1,52 @@
-#****************************************************************
-#* -*- coding: utf-8 -*-                                        *
-#*  Name    : filterSeach.py                                    *
-#*  Author  : Eric Araro                                        *
-#*  Notice  : Copyright (c) 2021 [Banary Source]                *
-#*          : All Rights Reserved                               *
-#*  Date    : 12/17/2021                                        *
-#*  Version : 1.0                                               *
-#*  Notes   : Utiliza el archivo "searchResult.txt" con         *
-#*            información de productos en mercado libre.        *
-#*            Realiza una comparación de los precios            *
-#*            para filtar los productos adecuados               *
-#****************************************************************
+'''
+-*- coding: utf-8 -*-
+  Name    : filterSeach.py
+  Author  : Eric Araro
+  Notice  : Copyright (c) 2021 [Banary Source]
+          : All Rights Reserved
+  Date    : 29/12/2021
+  Version : 1.1
+  Notes   : Use the file productsInfo/infoMercadoLibre.json  to obtain the products
+            information and filter bay price.
+'''
+from json import load
+from os import link
+import color
 import pyshorteners
 
-class Product:
-    def __init__(self, number, price, title, link):
-        self.number = number
-        self.price = price
-        self.title = title
-        self.link = link
-
-# Colors for terminal "print()"
-none_color = "\033[1;00m"
-black = "\033[1;30m"
-red = "\033[1;31m"
-green = "\033[1;32m"
-yellow = "\033[1;33m"
-blue = "\033[1;34m"
-magenta = "\033[1;35m"
-cyan = "\033[1;36m"
-white = "\033[1;37m"
-
 # Filename declaration
-filename = "resultSearch.txt"
+filename = "productsInfo/infoMercadoLibre.json"
 
-# Open the file and obtain information
-list_products = []
-items = [[], [], [], []]
-f_text = open(filename, "r")
-lines_text = f_text.readlines()
-i = 0
-for line in lines_text:
-    number, price, title, link = (item.strip() for item in line.split('] [', 3))
-    number = number.replace("[","")
-    price = price.replace(",", "")
-    link = link.replace ("]", "")
+# Parse the JSON string in the info file
+with open(filename) as info_file:
+    list_products = load(info_file)
 
-    # items[0].append(int(number))
-    # items[1].append(int(price))
-    # items[2].append(title)
-    # items[3].append(link)
+list_final = []
+for product in range(len(list_products)):
+    if("price" in list_products[product]):
+        list_products[product]['price'] = int( list_products[product]['price'].pop(1).replace(',', '') )
 
-    list_products.append(Product(int(number), int(price), title, link))
+        if("rate" in list_products[product]):
+            list_products[product]['rate'] = float(list_products[product]['rate'].pop(0))
+            if(list_products[product]['rate'] >= 4.8):
 
-    i += 1
+                if("opinion_number" in list_products[product]):
+                    list_products[product]['opinion_number'] = int( list_products[product]['opinion_number'].pop(0).strip('Promedio entre opiniones') )
+                    if(list_products[product]['opinion_number'] > 400):
+                        list_final.append(list_products[product])
 
-# Sort prices by cost
-sorted_price_low = sorted(list_products, key=lambda Product: Product.price)
-sorted_price_high = sorted(list_products, key=lambda Product: Product.price, reverse=True)
-
-for item in range(5):
-    # Cut the URL
+print("\n" + color.red + "---------------------------------------------------------------------------------------" + color.reset_color + "\n")
+list_final = sorted(list_final, key=lambda product : product['price'])
+list_file = open("bestProduct.txt", "w")
+print(*[color.cyan, ("{:<8} {:<90} {:<10}".format('Price', 'Name', 'Link')), color.reset_color])
+for row in range(len(list_final)):
+    link_aux = str(list_final[row]['link'])
+    link_aux = link_aux.strip('[\']')
     shortener = pyshorteners.Shortener()
-    short_url = shortener.dagd.short(sorted_price_low[item].link)
-    print(sorted_price_low[item].price, sorted_price_low[item].title, short_url)
-
-# for comb in zip(items[0],items[1], items[2], items[3]):
-    # print(comb[0], comb[1], comb[2], comb[3])
-
-# Dictionary of products
-# dictionary_products = {}
-# for pos in range(i):
-    # dictionary_products[pos] = {items[0][pos]: {'Price': items[1][pos], 'Title': items[2][pos] , 'Link': items[3][pos]}}
-# print(dictionary_products[0])
-
-# print(*[cyan, ("{:<8} {:<8} {:<90} {:<50}".format('Number', 'Price', 'Description', 'URL')), none_color])
-# for column in range(i):
-        # print("{:<8} {:<8} {:<90}".format(items[0][column], items[1][column], items[2][column]))
-
-# new_list = sorted(items[1])
-# print(new_list)
-
-f_text.close()
+    try:
+        short_url = shortener.dagd.short(link_aux)
+    except:
+        short_url = link_aux
+    list_file.write("{:<8} {:<90} {:<10} \n".format(str(list_final[row]['price']), str(list_final[row]['name']), short_url))
+    print("{:<8} {:<90} {:<10}".format(str(list_final[row]['price']), str(list_final[row]['name']), short_url))
+list_file.close()
