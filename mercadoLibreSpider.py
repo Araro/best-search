@@ -16,6 +16,7 @@ from scrapy.loader.processors import MapCompose
 from scrapy.loader import ItemLoader
 from scrapy import Request
 import color
+import os
 
 # Open variables file
 with open("productsInfo/" + "urlMercadoLibre.txt", "r") as f:
@@ -104,4 +105,3 @@ class MercadoLibreCrawler(CrawlSpider):
 
 #*****************  End Class definitions  *************************
 #*******************************************************************
-

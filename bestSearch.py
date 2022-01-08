@@ -50,8 +50,8 @@ def get_product_url(driver):
     i = 0
     n = 0
     ## "tqdm" is the progress bar
-    # for i in tqdm(range(count_aux)):
-    for i in tqdm(range(3)):
+    for i in tqdm(range(count_aux)):
+    # for i in tqdm(range(3)):
         # Urls of Items
         ## Wait until the page is loaded
         delay = 3 # seconds
@@ -70,7 +70,6 @@ def get_product_url(driver):
         products = driver.find_elements(By.CLASS_NAME, "ui-search-result__wrapper")
         for product in products:
             item_link = product.find_element(By.TAG_NAME, 'a').get_attribute('href')
-
             data = "[%s]\n"%(item_link)
             f.write(data)
 
@@ -86,7 +85,7 @@ def get_product_url(driver):
                 break
 
         i += 1
-    print(color.blue + "Number of products: " + color.ired + str(n) + color.reset_color)
+    print(color.blue + "Number of products: " + color.redi + str(n) + color.reset_color)
     f.close()
     driver.close()
 
@@ -117,7 +116,7 @@ def init_search_chrome(product_to_search):
 def standalone_search(product_to_search):
     print(color.cyan + product_to_search + color.reset_color)
     init_search_chrome(product_to_search)
-    # os.system("scrapy runspider mercadoLibreSpider.py --overwrite-output=productsInfo/infoMercadoLibre.json")
+    os.system("scrapy runspider mercadoLibreSpider.py --overwrite-output=productsInfo/infoMercadoLibre.json")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
